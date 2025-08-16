@@ -1,88 +1,145 @@
-🚀 OrchestraAI Designer's Copilot
+OrchestraAI Designer's Copilot - Technical Documentation
+Overview
+OrchestraAI is a Streamlit-based AI-powered tool designed to analyze client briefs and provide comprehensive project analysis for design teams. It leverages machine learning, natural language processing, and external APIs to deliver intelligent recommendations and automated project scoping.
 
-OrchestraAI is a proof-of-concept AI agent designed to accelerate a designer's workflow. It analyzes a new client brief, retrieves relevant historical context and visual inspiration from a knowledge base, and generates a comprehensive "Project Kick-off Packet." This tool demonstrates a complete V2 vision, including the automated generation of a preliminary Figma draft using HTML.
-✨ Features
+Key Features
+🎯 Core Functionality
+Intelligent Brief Analysis: Extracts structured attributes from unstructured client briefs
 
-    AI-Powered Brief Analysis: Uses Google's Gemini model to understand the core objectives of a new client brief.
+Semantic Search: Finds relevant past projects and inspirations using embedding-based similarity
 
-    Retrieval-Augmented Generation (RAG): Connects to an Airtable database to find and retrieve relevant past projects and visual inspirations.
+Designer Recommendations: Matches projects with the most suitable designers based on expertise
 
-    Semantic Search: Employs sentence-transformer models to find contextually similar data, going beyond simple keyword matching.
+Project Scoping: Generates detailed project scopes with deliverables, timelines, and risk assessments
 
-    Brief Completeness Check: Automatically identifies missing information in a brief and generates clarifying questions for the client.
+Smart Questioning: Creates contextual clarifying questions based on brief analysis
 
-    V2 Figma Draft Generation: Creates a preliminary webpage design in HTML with Tailwind CSS, which can be directly imported into Figma using plugins like "HTML to Design."
+HTML Prototyping: Generates Figma-ready HTML drafts for immediate visualization
 
-    Interactive Web UI: Built with Streamlit for a user-friendly and professional interface.
+🔧 Advanced Features
+Complexity Scoring: Automated project complexity assessment
 
-🛠️ Tech Stack
+Designer Profiling: Dynamic expertise analysis based on historical work
 
-    Backend & Logic: Python
+Real-time Progress Tracking: Visual progress indicators during analysis
 
-    Web Framework: Streamlit
+Multi-tab Results Display: Organized presentation of analysis results
 
-    AI Model: Google Gemini 1.5 Flash
+Technology Stack
+Core Technologies
+Streamlit: Web application framework for the user interface
 
-    Semantic Search: sentence-transformers (all-MiniLM-L6-v2)
+Python: Primary programming language
 
-    Database: Airtable (via py-airtable)
+AI & Machine Learning
+Google Gemini AI (gemini-1.5-flash): Large language model for text generation and analysis
 
-    Data Handling: Pandas
+Sentence Transformers (all-MiniLM-L6-v2): Semantic embedding model for similarity search
 
-⚙️ Setup and Installation
+NumPy: Numerical computations for similarity calculations
 
-Follow these steps to get the OrchestraAI Copilot running on your local machine.
-1. Prerequisites
+Data Management
+Pandas: Data manipulation and analysis
 
-    Python 3.9+
+Airtable API (PyAirtable): External database integration for project data
 
-    An Airtable account with a Base set up according to the project's data structure.
+JSON: Structured data parsing and attribute extraction
 
-2. Clone the Repository
+Frontend Components
+Streamlit Components: Custom HTML rendering for live previews
 
-git clone [https://github.com/your-username/OrchestraAI.git](https://github.com/your-username/OrchestraAI.git)
-cd OrchestraAI
+Tailwind CSS: Styling framework for generated HTML drafts
 
-3. Create a Virtual Environment
+Architecture & Code Structure
+1. Configuration & Setup
+python
+# Page configuration and API keys management
+st.set_page_config(page_title="OrchestraAI", layout="wide")
+AIRTABLE_API_KEY = "..."  # External database credentials
+GEMINI_API_KEY = "..."    # AI model credentials
+2. Resource Management
+Cached Functions for performance optimization:
 
-It's highly recommended to use a virtual environment to manage dependencies.
+get_ai_models(): Initializes and caches AI models
 
-# For Windows
-python -m venv .venv
-.\.venv\Scripts\activate
+get_airtable_data(): Retrieves and caches external data
 
-# For macOS/Linux
-python3 -m venv .venv
-source .venv/bin/activate
+get_embeddings(): Computes and caches text embeddings
 
-4. Install Dependencies
+3. Core AI Functions
+Project Attribute Extraction
+python
+def extract_project_attributes(brief, gemini_model):
+    # Uses structured prompting to extract JSON attributes
+    # Handles parsing errors gracefully
+Semantic Search Engine
+python
+def find_similar_items(query, df, embeddings, top_k=5):
+    # Computes cosine similarity between query and database items
+    # Returns top-k most relevant matches
+Designer Expertise Analysis
+python
+def analyze_designer_expertise(deliverables_df):
+    # Analyzes historical work patterns
+    # Builds expertise profiles with specialization detection
+4. Intelligence Layer
+Complexity Assessment
+Keyword-based scoring: Identifies complexity indicators (e-commerce, API, integration)
 
-Install all the required Python libraries using the requirements.txt file.
+Weighted scoring system: Assigns complexity levels (Simple/Medium/Complex)
 
-pip install -r requirements.txt
+Smart Recommendations
+Designer matching: Combines experience and specialization relevance
 
-5. Configure API Keys
+Project scoping: Context-aware scope generation using similar past projects
 
-The application uses API keys for Airtable and Google Gemini. These are currently hard-coded in the app.py script. For a production environment, it is recommended to manage these using Streamlit's secrets management.
-▶️ How to Run
+Question generation: Identifies information gaps for client clarification
 
-Once the setup is complete, you can run the Streamlit application with a single command:
+5. User Interface Architecture
+Progressive Analysis Workflow
+Brief Input: Text area for client requirements
 
-streamlit run app.py
+Processing Pipeline: Visual progress tracking through analysis stages
 
-Your web browser will automatically open a new tab with the application running.
-🔬 How It Works
+Results Presentation: Tabbed interface for different analysis aspects
 
-    Data Ingestion: On startup, the app connects to the specified Airtable base and fetches all records from the Deliverables and Inspirations tables. It then cleans this data.
+Results Display Tabs
+Project Scope: Comprehensive project breakdown
 
-    Embedding Generation: The text from these records is converted into numerical vectors (embeddings) using a sentence-transformer model. This process happens only once and the results are cached for speed.
+Intelligent Questions: Context-aware clarification questions
 
-    User Input: The user pastes a new client brief into the text area.
+Designer Recommendations: Ranked designer suggestions with expertise details
 
-    Similarity Search: When the user clicks "Generate," the application creates an embedding for the client brief and compares it against the cached embeddings to find the most similar past projects and inspirations.
+Visual Inspiration: Relevant design references
 
-    Packet Generation (AI Call 1): The client brief and the retrieved data are formatted into a detailed prompt and sent to the Gemini API, which generates the markdown-based "Project Kick-off Packet."
+Figma Draft: Generated HTML prototype
 
-    Figma Draft (AI Call 2): The generated packet is then used as context for a second prompt, which instructs the Gemini API to create an HTML/Tailwind CSS prototype of a webpage.
+Data Flow
+Input Processing
+Client Brief → Text analysis and attribute extraction
 
-    Display: The final Kick-off Packet and the interactive HTML draft are displayed in the Streamlit interface.
+Embedding Generation → Semantic representation for similarity search
+
+Database Query → Retrieval of relevant historical data
+
+Analysis Pipeline
+Attribute Extraction → Structured project characteristics
+
+Similarity Search → Relevant deliverables and inspirations
+
+Designer Analysis → Expertise profiling and recommendations
+
+Content Generation → Scope, questions, and prototypes
+
+Output Generation
+Structured Results → JSON attributes and metrics
+
+Natural Language → Generated scopes and questions
+
+Visual Components → HTML drafts and data visualizations
+
+External Integrations
+Airtable Database
+Tables Used: Deliverables, Inspirations
+
+Data Fields: Project names, designer
